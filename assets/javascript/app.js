@@ -1,13 +1,14 @@
-var topics = ["Anthony Davis", "Kevin Durant", "John Wall", "Steph Curry", "Demarcus Cousins", "Klay Thompson"];
+//this isn't as pretty as the example, but I believe i have it 100% functional
 
-// var player = "";
-//replace spaces with underscores so the url will work
-
+//declare original array of player names
+var topics = ["Anthony Davis", "Kevin Durant", "John Wall", "Steph Curry", "Demarcus Cousins", "Klay Thompson", "Shaquille O'neal", "Allen Iverson", "Blake Griffin", "James Harden"];
 
 //always display the default player buttons on screen load
-displayPlayers();
+displayButtons();
 
-function displayPlayers() {
+//function to write the player buttons across the top of the screen
+//each player added to the array will also get a button
+function displayButtons() {
 
 	//ensure that the buttons aren't repeated
 	$('#playerButtons').empty();
@@ -37,17 +38,16 @@ $('#add-player').on("click", function(event) {
 	//clear the input box
 	$('#player-input').val('');
 	//display the player buttons including newly added player from on click event
-	displayPlayers();
-
-
+	displayButtons();
 });
 
 //when a player name button is clicked, clear the div with id of players
-$('.player').on("click", function() {
+$(document).on("click", ".player", function() {
+	//clear the players div
 	$('#players').empty();
 	//var to hold value of data-name of the button clicked
 	var player = $(this).attr("data-name");
-	console.log("new button");
+	console.log(this);
 	//replace space with _ so the queryURL will be valid
 	var noSpace = player.replace(" ", "_");
 	//build queryURL
@@ -61,16 +61,37 @@ $('.player').on("click", function() {
 		method: "GET"
 	})
 	.done(function(response) {
+		//make ten <img>'s with src, data-name, data-still/animate and size
 		for (var i = 0; i < 10; i++) {
-		var stillURL = response.data[i].images.fixed_height_still.url;
-		console.log(stillURL);
-		var rating = response.data[i].rating;
-		console.log(rating);  
-		$('#players').append('Rated: ' + rating + '<br>' + '<img src="' + stillURL + '"width="400"><br>');
-	}
+			//store the rating for each gif
+			var rating = response.data[i].rating;
+			var img = $("<img>");
+				//add multiple attributes to the newly created <img> at one time
+				img.attr({
+					'src': response.data[i].images.fixed_height_still.url,
+					'data-name': 'still',
+					'data-still': response.data[i].images.fixed_height_still.url,
+					'data-animate': response.data[i].images.fixed_height.url,
+					'width': 300,
+					'height': 300
+				});
+		//add gifs to the #players div
+		$('#players').append(img);
+		$('#players').append("<br>Rated: " + rating + "<br><br>");
+		}
 	});
 });
 
-$('#players').on("click", "img", function() {
-
+//when a still gif is clicked
+$(document).on("click", 'img', function(){
+	//if the gif is still, change to animate
+	if($(this).attr('data-name') === 'still') {
+		$(this).attr('src', $(this).attr('data-animate'));
+		$(this).attr('data-name', 'animate');
+	}
+	//if the gif is animated, change to still
+	else {
+		$(this).attr('src', $(this).attr('data-still'));
+		$(this).attr('data-name', 'still');
+	}
 });
