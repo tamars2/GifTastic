@@ -51,7 +51,7 @@ $(document).on("click", ".player", function() {
 	//replace space with _ so the queryURL will be valid
 	var noSpace = player.replace(" ", "_");
 	//build queryURL
-	var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + noSpace + "&limit=10&api_key=dc6zaTOxFJmzC";
+	var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + noSpace + "&limit=10&api_key=dc6zaTOxFJmzC";
 	console.log(player);
 	console.log(noSpace);
 	console.log(queryURL);
